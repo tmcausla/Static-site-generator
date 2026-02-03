@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from helper_fxns import split_nodes_image, split_nodes_link
+from helper_fxns import split_nodes_image, split_nodes_link, text_to_textnodes
 
 class TestMarkdownSplitting(unittest.TestCase):
 
@@ -109,6 +109,24 @@ class TestMarkdownSplitting(unittest.TestCase):
         node = TextNode("Just some plain text", TextType.TEXT)
         new_nodes = split_nodes_link([node])
         self.assertListEqual([node], new_nodes)
+
+    def test_text_to_textnodes(self):
+        text = "This is **bold text** with an _italic_ word **and** a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word ", TextType.TEXT),
+            TextNode("and", TextType.BOLD),
+            TextNode(" a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+        self.assertEqual(text_to_textnodes(text), expected)
 
 
 if __name__ == "__main__":

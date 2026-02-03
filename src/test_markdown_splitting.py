@@ -1,0 +1,115 @@
+import unittest
+from textnode import TextNode, TextType
+from helper_fxns import split_nodes_image, split_nodes_link
+
+class TestMarkdownSplitting(unittest.TestCase):
+
+    # -------------------------
+    # IMAGE TEST CASES
+    # -------------------------
+    def test_single_image(self):
+        node = TextNode("Here is an ![img](https://example.com/img.png)!", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("Here is an ", TextType.TEXT),
+                TextNode("img", TextType.IMAGE, "https://example.com/img.png"),
+                TextNode("!", TextType.TEXT),
+            ],
+            new_nodes
+        )
+
+    def test_image_at_start(self):
+        node = TextNode("![start](https://example.com/start.png) followed by text", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("start", TextType.IMAGE, "https://example.com/start.png"),
+                TextNode(" followed by text", TextType.TEXT),
+            ],
+            new_nodes
+        )
+
+    def test_image_at_end(self):
+        node = TextNode("Text before ![end](https://example.com/end.png)", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("Text before ", TextType.TEXT),
+                TextNode("end", TextType.IMAGE, "https://example.com/end.png"),
+            ],
+            new_nodes
+        )
+
+    def test_consecutive_images(self):
+        node = TextNode("![a](https://example.com/a.png)![b](https://example.com/b.png)", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("a", TextType.IMAGE, "https://example.com/a.png"),
+                TextNode("b", TextType.IMAGE, "https://example.com/b.png"),
+            ],
+            new_nodes
+        )
+
+    def test_no_images(self):
+        node = TextNode("Just some plain text", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual([node], new_nodes)
+
+    # -------------------------
+    # LINK TEST CASES
+    # -------------------------
+    def test_single_link(self):
+        node = TextNode("Click [here](https://example.com) now", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("Click ", TextType.TEXT),
+                TextNode("here", TextType.LINK, "https://example.com"),
+                TextNode(" now", TextType.TEXT),
+            ],
+            new_nodes
+        )
+
+    def test_link_at_start(self):
+        node = TextNode("[start](https://example.com) followed by text", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("start", TextType.LINK, "https://example.com"),
+                TextNode(" followed by text", TextType.TEXT),
+            ],
+            new_nodes
+        )
+
+    def test_link_at_end(self):
+        node = TextNode("Text before [end](https://example.com)", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("Text before ", TextType.TEXT),
+                TextNode("end", TextType.LINK, "https://example.com"),
+            ],
+            new_nodes
+        )
+
+    def test_consecutive_links(self):
+        node = TextNode("[a](https://example.com/a)[b](https://example.com/b)", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("a", TextType.LINK, "https://example.com/a"),
+                TextNode("b", TextType.LINK, "https://example.com/b"),
+            ],
+            new_nodes
+        )
+
+    def test_no_links(self):
+        node = TextNode("Just some plain text", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([node], new_nodes)
+
+
+if __name__ == "__main__":
+    unittest.main()

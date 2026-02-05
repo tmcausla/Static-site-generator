@@ -1,6 +1,7 @@
 import unittest
 from textnode import TextNode, TextType
-from helper_fxns import split_nodes_image, split_nodes_link, text_to_textnodes
+from markdown_splitting import *
+from block_parsing import *
 
 class TestMarkdownSplitting(unittest.TestCase):
 
@@ -128,6 +129,41 @@ class TestMarkdownSplitting(unittest.TestCase):
         ]
         self.assertEqual(text_to_textnodes(text), expected)
 
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        expected = [
+            "This is **bolded** paragraph",
+            "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+            "- This is a list\n- with items",
+        ]
+        self.assertEqual(blocks, expected)
+
+    def test_extra_spacing(self):
+        md = "Hello\n\n\nWorld"
+        blocks = markdown_to_blocks(md)
+        expected = ["Hello", "World"]
+        self.assertEqual(blocks, expected)
+
+    def test_leading_trailing_newline(self):
+        md = "\n\nHello\n\nWorld\n\n"
+        blocks = markdown_to_blocks(md)
+        expected = expected = ["Hello", "World"]
+        self.assertEqual(blocks, expected)
+
+    def test_whitespace_only_blocks(self):
+        md = "Hello\n\n   \n\nWorld"
+        blocks = markdown_to_blocks(md)
+        expected = expected = ["Hello", "World"]
+        self.assertEqual(blocks, expected)
 
 if __name__ == "__main__":
     unittest.main()

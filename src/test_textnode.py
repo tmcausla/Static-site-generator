@@ -1,7 +1,7 @@
 import unittest
 from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import LeafNode
-from markdown_splitting import *
+from inline_parsing import *
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):

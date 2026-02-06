@@ -1,10 +1,14 @@
 from enum import Enum
+from textnode import *
+from inline_parsing import *
+from htmlnode import *
+import re
 
 class BlockType(Enum):
     PARAGRAPH = "p"
     HEADING = "h"
     CODE = "code"
-    QUOTE = "quote"
+    QUOTE = "blockquote"
     UNORDERED_LIST = "ul"
     ORDERED_LIST = "ol"
 
@@ -16,7 +20,7 @@ def markdown_to_blocks(markdown):
 def block_to_blocktype(block):
     lines_of_text = block.split("\n")
 
-    if block.startswith("#"):
+    if re.match(r"^#{1,6} .+", block):
         return BlockType.HEADING
 
     if block.startswith("```\n") and block.endswith("```"):

@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from markdown_splitting import *
+from inline_parsing import *
 from block_parsing import *
 
 class TestMarkdownSplitting(unittest.TestCase):

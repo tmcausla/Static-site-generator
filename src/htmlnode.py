@@ -24,12 +24,14 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, None, props)
 
     def to_html(self):
-        if not self.value:
-            raise ValueError("Leaf node to html error: value not provided")
         if not self.tag:
             return self.value
+        if self.tag == 'br':
+            return '<br>'
         if self.tag == 'img':
             return f'<img' + self.props_to_html() + ' />'
+        if not self.value:
+            raise ValueError("Leaf node to html error: value not provided")
         return f'<{self.tag}' + self.props_to_html() + f'>{self.value}</{self.tag}>'
 
     def __repr__(self):

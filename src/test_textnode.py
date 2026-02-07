@@ -37,7 +37,7 @@ class TestTextNode(unittest.TestCase):
     def test_image_to_leafnode(self):
         node = TextNode("An image of magi", TextType.IMAGE, "www.wowmagic.gov")
         html_node = text_node_to_html_node(node)
-        self.assertEqual(repr(html_node), "LeafNode(img,  , {'src': 'www.wowmagic.gov', 'alt': 'An image of magi'})")
+        self.assertEqual(repr(html_node), "LeafNode(img, , {'src': 'www.wowmagic.gov', 'alt': 'An image of magi'})")
         self.assertEqual(html_node.to_html(), '<img src="www.wowmagic.gov" alt="An image of magi" />')
 
     def test_split_nodes_delimiter_italic(self):

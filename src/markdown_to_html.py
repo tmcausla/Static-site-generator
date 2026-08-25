@@ -64,32 +64,3 @@ def markdown_to_html_node(markdown):
             raise ValueError(f"unhandled blocktype: {block_type}")
         child_nodes.append(block_parent)
     return ParentNode("div", child_nodes)
-
-test1 = """
-This is **bolded** paragraph
-text in a p
-tag here
-
-This is another paragraph with _italic_ text and `code` here
-
-"""
-test2 = """
-```
-This is text that _should_ remain
-the **same** even with inline stuff
-```
-"""
-test3 = """
-## Now for a biggun
-
-> this will be **quote** blocks
-> with different _italic_ syntax **inside**
-> each `line`
-
-- and this will be a list
-- in the most unordered of fashions
-- but hey ya did it dere chum
-"""
-
-test3_node = markdown_to_html_node(test3)
-print(test3_node.to_html())

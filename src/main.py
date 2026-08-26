@@ -37,11 +37,22 @@ def generate_page(from_path, template_path, dest_path):
 
     html_str = markdown_to_html_node(markdown).to_html()
     md_title = extract_title(markdown)
-    template = template.replace("{{ Title }}", md_title).replace("{{ Content }}", html_str)
+    new_page = template.replace("{{ Title }}", md_title).replace("{{ Content }}", html_str)
 
     with open(dest_path, 'w') as new_file:
-        new_file.write(template)
+        new_file.write(new_page)
         print(f"successfully created {dest_path}")
+
+def generate_pages_recursive(dir_path_content='content', template_path='template.html', dest_dir_path='public'):
+    for entry in os.listdir(dir_path_content):
+        new_content_path = os.path.join(dir_path_content, entry)
+        new_dest_path = os.path.join(dest_dir_path, entry)
+
+        if os.path.isdir(new_content_path):
+            os.mkdir(new_dest_path)
+            generate_pages_recursive(new_content_path, template_path, new_dest_path)
+        elif entry.endswith('.md'):
+            generate_page(new_content_path, template_path, new_dest_path.replace('.md', '.html'))
 
 
 # main fxn
@@ -53,7 +64,7 @@ def main():
     # print("made new public dir")
 
     static_to_public()
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive()
 
 if __name__ == "__main__":
     main()
